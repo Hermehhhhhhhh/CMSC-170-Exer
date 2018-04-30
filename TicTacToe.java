@@ -9,7 +9,7 @@ class TicTacToe{
 	}
 
 	public void user_turn(int i, int j){
-		if(this.board[i][j] != 1){
+		if(this.board[i][j] != 1 && this.board[i][j] != 2){
 			this.board[i][j] = 1; //1 is for user, 2 is for agent
 			moves++;
 			if(moves<9 && (this.check_Winner() == 0 || this.check_Winner() == 2)){
@@ -17,7 +17,10 @@ class TicTacToe{
 			}
 		}
 	}
-
+	public void reset(){
+		this.moves = 0;
+		this.initialize_Board();
+	}
 	public void agent_turn(){
 		Random ai = new Random();
 		int x = 0, y = 0 ; // initial agent turn is (0,0)
@@ -79,7 +82,7 @@ class TicTacToe{
 		}
 
 		if(this.board[0][2] == this.board[1][1] && this.board[1][1] == this.board[2][0] && this.board[2][0] !=0){ // diag 1
-			return this.board[0][0];
+			return this.board[0][2];
 		}
 
 		// End of Game

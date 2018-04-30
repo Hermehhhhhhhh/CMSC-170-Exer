@@ -9,19 +9,50 @@ class Gui{
 	static JButton[][] button_board = new JButton[3][3]; // board made of buttons
 	TicTacToe tictac = new TicTacToe();
 	JFrame frame = new JFrame("Tic Tac Toe");
-
+	JLabel turn;
+	JPanel board_panel;
 	public Gui(){
-		JPanel board = new JPanel();
-		board.setLayout(new  GridLayout(3,3));
+		frame.setLayout(new BorderLayout());
+
+		JPanel north_panel = new JPanel();
+		JPanel reset_panel = new JPanel();
+		JButton reset = new JButton("Reset");
+		// reset.setContentAreaFilled(false);
+		reset.setFocusPainted(false);
+		reset.setBackground(new Color(18,131,183));
+		reset.setForeground(Color.WHITE);
+		reset_panel.setBorder(BorderFactory.createEmptyBorder(0,0,0,430));
+		reset_panel.add(reset);
+		north_panel.add(reset_panel);
+
+		turn = new JLabel("User turn");
+		north_panel.add(turn);
+
+		board_panel = new JPanel();
+		board_panel.setLayout(new  GridLayout(3,3));
 
 		// GET THE BOARD FROM TICTAC
 		this.get_Board();
 
 		//INITIALIZES THE 3X3 SIZED BOARD
-		this.initializa_Board(board);
+		this.initialize_Board(board_panel);
+
+		//ADDS ACTION LISTENER
+		reset.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+			// button.setBackground(new Color(0,0,0));
+				System.out.println("RESET!");
+				board_panel.removeAll();
+				board_panel.revalidate();
+				tictac.reset();;
+				initialize_Board(board_panel);
+			}
+		});
+
 		
 		// BUILD FRAME
-		frame.add(board);
+		frame.add(north_panel, BorderLayout.NORTH);
+		frame.add(board_panel, BorderLayout.CENTER);
 		frame.setSize(600,600);
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -45,7 +76,7 @@ class Gui{
 		}
 	}
 
-	void initializa_Board(JPanel board){
+	void initialize_Board(JPanel board){
 		for(int i = 0; i < 3; i++){
 			for(int j = 0; j < 3; j++){
 				JPanel cell = new JPanel();
@@ -56,7 +87,7 @@ class Gui{
 				button.setFocusPainted(false);
 				button.setBackground(new Color(175,206,255));
 				cell.add(button);
-				board.add(cell);
+				board_panel.add(cell);
 
 				//ADDS ACTION LISTENER
 				button.addActionListener(new ActionListener(){
@@ -69,8 +100,8 @@ class Gui{
 						int j = Integer.parseInt(id[1]);
 						tictac.user_turn(i,j);	//TURN NI USER. TIRA(UH! UH!)!
 						tictac.print_board();
-						check_Winner();						
 						update_Board();
+						check_Winner();						
 					}
 				});
 
@@ -80,18 +111,31 @@ class Gui{
 			}
 		}
 	}
-
+	void message_box(String wins){
+		int dialogButton = JOptionPane.showConfirmDialog (frame, wins+" wins. Do you want to play again?");
+		if(dialogButton == JOptionPane.YES_OPTION) {
+		    board_panel.removeAll();
+			board_panel.revalidate();
+			tictac.reset();
+			initialize_Board(board_panel);
+		
+		}else System.exit(0);
+	}
 	void check_Winner(){
 		int winner = this.tictac.check_Winner();
 		if(winner == 1){
 			System.out.println("WINNER: USER");
-			this.frame.dispatchEvent(new WindowEvent(this.frame, WindowEvent.WINDOW_CLOSING));
+			message_box("User");
 		}else if(winner == 2){
 			System.out.println("WINNER: AGENT");
-			this.frame.dispatchEvent(new WindowEvent(this.frame, WindowEvent.WINDOW_CLOSING));
+			message_box("Agent");
 		}else if(winner == 3){
 			System.out.println("WINNER: NONE YOU WEAKSHITS");
-			this.frame.dispatchEvent(new WindowEvent(this.frame, WindowEvent.WINDOW_CLOSING));			
+			message_box("No one ");
 		}
+		
 	}
+
+	
+	public void run(){}
 }
