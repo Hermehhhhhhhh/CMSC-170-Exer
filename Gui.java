@@ -11,6 +11,7 @@ class Gui{
 	JFrame frame = new JFrame("Tic Tac Toe");
 	JLabel turn;
 	JPanel board_panel;
+	
 	public Gui(){
 		frame.setLayout(new BorderLayout());
 
