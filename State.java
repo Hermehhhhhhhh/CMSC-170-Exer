@@ -54,7 +54,6 @@ public class State{
         this.utility = max;
     }
 
-
     public void minimization(){
         int min = 2;
         for(int i=0; i<this.array_moves.length; i++){
@@ -64,7 +63,6 @@ public class State{
         }
         this.utility = min;
     }
-
 
     public void computeUtility(){
         int counter = 0;

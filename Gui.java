@@ -123,7 +123,7 @@ class Gui{
 		}else System.exit(0);
 	}
 	void check_Winner(){
-		int winner = this.tictac.check_Winner();
+		int winner = this.tictac.check_Winner(board);
 		if(winner == 1){
 			System.out.println("WINNER: USER");
 			message_box("User");

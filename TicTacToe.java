@@ -12,7 +12,7 @@ class TicTacToe{
 		if(this.board[i][j] != 1 && this.board[i][j] != 2){
 			this.board[i][j] = 1; //1 is for user, 2 is for agent
 			moves++;
-			if(moves<9 && (this.check_Winner() == 0 || this.check_Winner() == 2)){
+			if(moves<9 && (this.check_Winner(this.board) == 0 || this.check_Winner(this.board) == 2)){
 				this.agent_turn();				
 			}
 		}
@@ -47,11 +47,16 @@ class TicTacToe{
 		rightMove = array_moves[0];
 
 		// Get the state with highest utility
+		System.out.println(array_moves.length);
         for(int i=0; i<array_moves.length; i++){
-			if(array_moves[i] != null && array_moves[i].getUtility() >= max){ // PROBLEM: WHAT IF EQUAL YUNG UTILITY
+			if(array_moves[i] != null && array_moves[i].getUtility() >= max && lose_prevention(array_moves[i].getBoard()) == 0){ // PROBLEM: WHAT IF EQUAL YUNG UTILITY
 				max = array_moves[i].getUtility();
 				rightMove = array_moves[i];
-            }
+            }else if(check_Winner(array_moves[i].getBoard()) == 2){
+				max = array_moves[i].getUtility();
+				rightMove = array_moves[i];
+				break;
+			}
 		}
 
 		// Get its coordinates
@@ -76,43 +81,43 @@ class TicTacToe{
 		return this.board;
 	}
 
-	public int check_Winner(){
+	public int check_Winner(int[][] board){
 
 		// ROW check
-		if(this.board[0][0] == this.board[0][1] && this.board[0][1] == this.board[0][2] && this.board[0][2] != 0){ // row 0
-			return this.board[0][0];
+		if(board[0][0] == board[0][1] && board[0][1] == board[0][2] && board[0][2] != 0){ // row 0
+			return board[0][0];
 		}
 
-		if(this.board[1][0] == this.board[1][1] && this.board[1][1] == this.board[1][2] && this.board[1][2] != 0){ // row 1
-			return this.board[1][0];
+		if(board[1][0] == board[1][1] && board[1][1] == board[1][2] && board[1][2] != 0){ // row 1
+			return board[1][0];
 		}
 
-		if(this.board[2][0] == this.board[2][1] && this.board[2][1] == this.board[2][2] && this.board[2][2] != 0){ // row 2
-			return this.board[2][0];
+		if(board[2][0] == board[2][1] && board[2][1] == board[2][2] && board[2][2] != 0){ // row 2
+			return board[2][0];
 		}
 
 		// COLUMN check
 
-		if(this.board[0][0] == this.board[1][0] && this.board[1][0] == this.board[2][0] && this.board[2][0] != 0){ // col 0
-			return this.board[0][0];
+		if(board[0][0] == board[1][0] && board[1][0] == board[2][0] && board[2][0] != 0){ // col 0
+			return board[0][0];
 		}
 		
-		if(this.board[0][1] == this.board[1][1] && this.board[1][1] == this.board[2][1] && this.board[2][1] != 0){ // col 1
-			return this.board[0][1];
+		if(board[0][1] == board[1][1] && board[1][1] == board[2][1] && board[2][1] != 0){ // col 1
+			return board[0][1];
 		}
 
-		if(this.board[0][2] == this.board[1][2] && this.board[1][2] == this.board[2][2] && this.board[2][2] != 0){ // col 2
-			return this.board[0][2];
+		if(board[0][2] == board[1][2] && board[1][2] == board[2][2] && board[2][2] != 0){ // col 2
+			return board[0][2];
 		}
 
 		// DIAGONAL check
 
-		if(this.board[0][0] == this.board[1][1] && this.board[1][1] == this.board[2][2] && this.board[2][2] !=0){ // diag 0
-			return this.board[0][0];
+		if(board[0][0] == board[1][1] && board[1][1] == board[2][2] && board[2][2] !=0){ // diag 0
+			return board[0][0];
 		}
 
-		if(this.board[0][2] == this.board[1][1] && this.board[1][1] == this.board[2][0] && this.board[2][0] !=0){ // diag 1
-			return this.board[0][2];
+		if(board[0][2] == board[1][1] && board[1][1] == board[2][0] && board[2][0] !=0){ // diag 1
+			return board[0][2];
 		}
 
 		// End of Game
@@ -140,5 +145,113 @@ class TicTacToe{
 		}
 
 		return copy;
+	}
+
+	public int lose_prevention(int[][] board){
+				// ROW check
+				if(board[0][0] == 1 && board[0][0] == board[0][1] && board[0][2] == 0){ // row 0
+					return 1;
+				}
+
+				if(board[0][2] == 1 && board[0][2] == board[0][1] && board[0][0] == 0){ // row 0
+					return 1;
+				}
+
+				if(board[0][2] == 1 && board[0][2] == board[0][0] && board[0][1] == 0){ // row 0
+					return 1;
+				}
+
+			
+				if(board[1][0] == 1 && board[1][0] == board[1][1] && board[1][2] == 0){ // row 1
+					return 1;
+				}
+				
+				if(board[1][2] == 1 && board[1][2] == board[1][1] && board[1][0] == 0){ // row 1
+					return 1;
+				}
+
+				if(board[1][2] == 1 && board[1][2] == board[1][0] && board[1][1] == 0){ // row 1
+					return 1;
+				}
+
+
+				if(board[2][0] == 1 && board[2][0] == board[2][1] && board[2][2] == 0){ // row 2
+					return 1;
+				}
+				
+				if(board[2][2] == 1 && board[2][2] == board[2][1] && board[2][0] == 0){ // row 2
+					return 1;
+				}
+
+				if(board[2][2] == 1 && board[2][2] == board[2][0] && board[2][1] == 0){ // row 2
+					return 1;
+				}
+		
+				// COLUMN check
+		
+				if(board[0][0] == 1 && board[0][0] == board[1][0] && board[2][0] == 0){ // col 0
+					return 1;
+				}
+
+				if(board[2][0] == 1 && board[2][0] == board[1][0] && board[0][0] == 0){ // col 0
+					return 1;
+				}
+
+				if(board[2][0] == 1 && board[2][0] == board[0][0] && board[1][0] == 0){ // col 0
+					return 1;
+				}
+
+				if(board[0][1] == 1 && board[0][1] == board[1][1] && board[2][1] == 0){ // col 1
+					return 1;
+				}
+				
+				if(board[2][1] == 1 && board[2][1] == board[1][1] && board[0][1] == 0){ // col 1
+					return 1;
+				}
+
+				if(board[2][1] == 1 && board[2][1] == board[0][1] && board[1][1] == 0){ // col 1
+					return 1;
+				}
+		
+				if(board[0][2] == 1 && board[0][2] == board[1][2] && board[2][2] == 0){ // col 2
+					return 1;
+				}
+
+				if(board[2][2] == 1 && board[2][2] == board[1][2] && board[0][2] == 0){ // col 2
+					return 1;
+				}
+
+				if(board[2][2] == 1 && board[2][2] == board[0][2] && board[1][2] == 0){ // col 2
+					return 1;
+				}
+		
+				// DIAGONAL check
+		
+				if(board[0][0] == 1 && board[0][0] == board[1][1] && board[2][2] == 0){ // diag 0
+					return 1;
+				}
+
+				if(board[2][2] == 1 && board[2][2] == board[1][1] && board[0][0] == 0){ // diag 0
+					return 1;
+				}
+
+				if(board[2][2] == 1 && board[2][2] == board[0][0] && board[1][1] == 0){ // diag 0
+					return 1;
+				}
+
+		
+				if(board[0][2] == 1 && board[0][2] == board[1][1] && board[2][0] == 0){ // diag 1
+					return 1;
+				}
+
+				if(board[2][0] == 1 && board[2][0] == board[1][1] && board[0][2] == 0){ // diag 1
+					return 1;
+				}
+
+				if(board[2][0] == 1 && board[2][0] == board[0][2] && board[1][1] == 0){ // diag 1
+					return 1;
+				}
+
+				return 0;
 	}
 }
