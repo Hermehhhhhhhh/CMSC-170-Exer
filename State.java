@@ -4,21 +4,47 @@ public class State{
     private int[][] board;
     private int x, y;
     private int utility;
-    private State[] array_moves;
+    private ArrayList<State> array_moves;
     private int turn;
     private int remainingMoves;
+    private boolean isMax;
 
-    public State(int[][] board, int x, int y, int remainingMoves, int turn){
+    public State(int[][] board, int x, int y, int remainingMoves, int turn, boolean isMax){
         this.x = x;
         this.y = y;
         this.board = board;
-        this.array_moves  = new State[remainingMoves];
+        this.array_moves  = new ArrayList<State>();
         this.remainingMoves = remainingMoves;
         this.turn = turn;        
-
+        this.isMax = isMax;
         // Mark the current move
         markCurrentMove();
+    }
 
+    public void maximization(){
+        int max = -2;
+        for(State s: this.array_moves){
+			if(s.getUtility() > max){
+                max = s.getUtility();
+            }
+        }
+        this.utility = max;
+    }
+
+
+    public void minimization(){
+        int min = 2;
+        for(State s: this.array_moves){
+			if(s.getUtility() < min){
+                min = s.getUtility();
+            }
+        }
+        this.utility = min;
+    }
+
+
+    public void computeUtility(){
+        Scanner sc = new Scanner(System.in);
         // Check for winner
         if(check_Winner() == 1){
             this.utility = -1;
@@ -31,50 +57,22 @@ public class State{
             // System.out.println("Draw");                                            
         }else{
             // Compute utility
-            computeUtility();
+            for(int i=0; i<3; i++){
+                for(int j=0; j<3; j++){
+                    if(this.board[i][j] == 0){ // free spots
+                        this.array_moves.add(new State(copyBoard(), i, j, this.remainingMoves-1,3-this.turn,!this.isMax)); // get the utility of next moves
+                    }
+                } 
+            }
+
+
+            for(State s: this.array_moves){
+                s.computeUtility();
+            }
             
-            if(this.turn == 1){ // user turn
-                minimization(); // get the least of the utilities
-            }else{ // agent turn
-                maximization(); // get the max of the utilities
-            }
-        }
 
-        
-    }
-
-    public void maximization(){
-        int max = -2;
-        for(int i=0; i<this.array_moves.length; i++){
-			if(this.array_moves[i] != null && this.array_moves[i].getUtility() > max){
-                max = this.array_moves[i].getUtility();
-            }
-        }
-
-        this.utility = max;
-    }
-
-
-    public void minimization(){
-        int min = 2;
-        for(int i=0; i<this.array_moves.length; i++){
-			if(this.array_moves[i] != null && this.array_moves[i].getUtility() < min){
-                min = this.array_moves[i].getUtility();
-            }
-        }
-        this.utility = min;
-    }
-
-
-    public void computeUtility(){
-        int counter = 0;
-        for(int i=0; i<3; i++){
-			for(int j=0; j<3; j++){
-                if(this.board[i][j] == 0 && counter<this.remainingMoves){ // free spots
-					this.array_moves[counter] = new State(copyBoard(), i, j, this.remainingMoves-1,3-this.turn); // get the utility of next moves
-                    counter++;
-				}
-			}
+            if(isMax) maximization();
+            else minimization();
         }
     }
 
@@ -85,7 +83,7 @@ public class State{
 			return this.board[0][0];
 		}
 
-		if(this.board[1][0] == this.board[1][1] && this.board[1][1] == this.board[1][2] && this.board[1][2] != 0){ // row 1
+    		if(this.board[1][0] == this.board[1][1] && this.board[1][1] == this.board[1][2] && this.board[1][2] != 0){ // row 1
 			return this.board[1][0];
 		}
 
