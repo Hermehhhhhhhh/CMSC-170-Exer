@@ -31,7 +31,6 @@ public class State{
         this.utility = max;
     }
 
-
     public void minimization(){
         int min = 2;
         for(State s: this.array_moves){
@@ -41,7 +40,6 @@ public class State{
         }
         this.utility = min;
     }
-
 
     public void computeUtility(){
         Scanner sc = new Scanner(System.in);
