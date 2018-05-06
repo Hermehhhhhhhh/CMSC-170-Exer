@@ -1,5 +1,6 @@
 import java.util.Random;
-
+import java.util.ArrayList;
+import java.util.Scanner;
 class TicTacToe{
 	int[][] board = new int[3][3];
 	int moves = 0; // for segfault checking
@@ -9,10 +10,10 @@ class TicTacToe{
 	}
 
 	public void user_turn(int i, int j){
-		if(this.board[i][j] != 1 && this.board[i][j] != 2){
+		if(this.board[i][j]  == 0){
 			this.board[i][j] = 1; //1 is for user, 2 is for agent
 			moves++;
-			if(moves<9 && (this.check_Winner() == 0 || this.check_Winner() == 2)){
+			if(moves < 9 && (this.check_Winner() == 0)){
 				this.agent_turn();				
 			}
 		}
@@ -24,10 +25,10 @@ class TicTacToe{
 	}
 
 	public void agent_turn(){
-		Random ai = new Random();
-		State[] array_moves = new State[9-moves];
-		int counter = 0 ; // initial agent turn is (0,0)
-		State rightMove;
+		Gui.set_turn("Agent's turn");
+		Scanner	 sc = new Scanner(System.in);
+		ArrayList<State> array_moves = new ArrayList<State>();
+		State rightMove = null;
 		int max = -2;
 		int nextX, nextY;
 		
@@ -37,23 +38,27 @@ class TicTacToe{
 		for(int i=0; i<3; i++){
 			for(int j=0; j<3; j++){
 				if(this.board[i][j] == 0){ // free spots
-					array_moves[counter] = new State(copyBoard(), i, j, 9-moves, 2); // get the utility
-					counter++;
+					array_moves.add(new State(copyBoard(), i, j, 9-moves, 2, true)); // get the utility
 				}
 			}
 		}
+		for(State s: array_moves){
+			// s.print_board();
+			s.computeUtility();
+            // sc.nextLine();
+		}
 
-		// initialization purpose only
-		rightMove = array_moves[0];
-
+		System.out.print("Utilities: ");
 		// Get the state with highest utility
-        for(int i=0; i<array_moves.length; i++){
-			if(array_moves[i] != null && array_moves[i].getUtility() >= max){ // PROBLEM: WHAT IF EQUAL YUNG UTILITY
-				max = array_moves[i].getUtility();
-				rightMove = array_moves[i];
+        for(int i=0; i<array_moves.size(); i++){
+        	System.out.print(array_moves.get(i).getUtility()+" ");
+			if(array_moves.get(i).getUtility() >= max){ // PROBLEM: WHAT IF EQUAL YUNG UTILITY
+				max = array_moves.get(i).getUtility();
+				rightMove = array_moves.get(i);
             }
 		}
 
+		System.out.println();
 		// Get its coordinates
 		nextX = rightMove.getX();
 		nextY = rightMove.getY();

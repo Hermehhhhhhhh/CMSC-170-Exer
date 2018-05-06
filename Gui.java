@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.imageio.*;
 /*
 	USER INTERFACE
 */
@@ -9,7 +10,7 @@ class Gui{
 	static JButton[][] button_board = new JButton[3][3]; // board made of buttons
 	TicTacToe tictac = new TicTacToe();
 	JFrame frame = new JFrame("Tic Tac Toe");
-	JLabel turn;
+	static JLabel turn;
 	JPanel board_panel;
 	
 	public Gui(){
@@ -64,14 +65,17 @@ class Gui{
 		this.board = tictac.get_Board();
 	}
 
+	static void set_turn(String s){
+		Gui.turn.setText(s);
+	}
 	void update_Board(){
 		this.get_Board();
 		for(int i=0; i<3; i++){
 			for(int j=0; j<3; j++){
 				if(this.board[i][j] == 1){
-					this.button_board[i][j].setBackground(new Color(0,0,0));
+					this.button_board[i][j].setIcon(new ImageIcon(("rock.png")));
 				}else if(this.board[i][j] == 2){
-					this.button_board[i][j].setBackground(new Color(100,0,0));
+					this.button_board[i][j].setIcon(new ImageIcon(("angrybird.jpg")));
 				}
 			}
 		}
@@ -80,13 +84,14 @@ class Gui{
 	void initialize_Board(JPanel board){
 		for(int i = 0; i < 3; i++){
 			for(int j = 0; j < 3; j++){
-				JPanel cell = new JPanel();
-				JButton button = new JButton();
+				JPanel cell = new JPanel(new FlowLayout(FlowLayout.LEFT,0,0));
+				JButton button = new JButton("",new ImageIcon(("walls.jpg")));
 				button.setName(i+","+j); //SETS THE NAME OF EACH BUTTON
 				button.setPreferredSize(new Dimension(190,190));
 				button.setBorderPainted(false);
 				button.setFocusPainted(false);
-				button.setBackground(new Color(175,206,255));
+				// button.setBackground(new Color(175,206,255));
+
 				cell.add(button);
 				board_panel.add(cell);
 
@@ -100,6 +105,7 @@ class Gui{
 						int i = Integer.parseInt(id[0]);
 						int j = Integer.parseInt(id[1]);
 						tictac.user_turn(i,j);	//TURN NI USER. TIRA(UH! UH!)!
+						Gui.set_turn("User's turn");
 						tictac.print_board();
 						update_Board();
 						check_Winner();						
