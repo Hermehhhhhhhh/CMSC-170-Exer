@@ -9,26 +9,102 @@ class Gui{
 	static JButton[][] button_board = new JButton[3][3]; // board made of buttons
 	TicTacToe tictac = new TicTacToe();
 	JFrame frame = new JFrame("Tic Tac Toe");
-	JLabel turn;
 	JPanel board_panel;
-	
+	int fighter;
+	JPanel choose;
 	public Gui(){
-		frame.setLayout(new BorderLayout());
 
 		JPanel north_panel = new JPanel();
-		JPanel reset_panel = new JPanel();
-		JButton reset = new JButton("Reset");
-		// reset.setContentAreaFilled(false);
-		reset.setFocusPainted(false);
-		reset.setBackground(new Color(18,131,183));
-		reset.setForeground(Color.WHITE);
-		reset_panel.setBorder(BorderFactory.createEmptyBorder(0,0,0,430));
-		reset_panel.add(reset);
-		north_panel.add(reset_panel);
+		
+		
 
-		turn = new JLabel("User turn");
-		north_panel.add(turn);
+		
+		choose_fighter();
+		// BUILD FRAME
+		frame.add(choose);
+		frame.setResizable(false);
+		frame.setSize(600,600);
+		frame.setLocationRelativeTo(null);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+	}
+	void choose_fighter(){
+		choose = new JPanel();
+		choose.setLayout(new FlowLayout());
+		choose.setBackground(new Color(192,192,192));
 
+		DropShadowPanel herme_panel = new DropShadowPanel(7);
+		herme_panel.setLayout(new BorderLayout());
+		JButton herme = new JButton("",new ImageIcon("herme.jpeg"));
+		JLabel herme_label = new JLabel("Herme");
+		herme_label.setFont(new Font("Courier New", Font.ITALIC, 30));
+		herme_label.setBorder(BorderFactory.createEmptyBorder(0,50,0,0));
+		
+		DropShadowPanel louie_panel = new DropShadowPanel(7);
+		louie_panel.setLayout(new BorderLayout());
+
+		JButton louie = new JButton("",new ImageIcon("louie.jpeg"));
+		JLabel louie_label = new JLabel("Lowe");
+		louie_label.setFont(new Font("Courier New", Font.ITALIC, 30));
+		louie_label.setBorder(BorderFactory.createEmptyBorder(0,55,0,0));
+	
+
+
+		herme.setPreferredSize(new Dimension(190,190));
+		herme.setBorderPainted(false);
+		herme.setFocusPainted(false);
+		herme.setBackground(new Color(89,89,89));
+
+		louie.setPreferredSize(new Dimension(190,190));
+		louie.setBorderPainted(false);
+		louie.setFocusPainted(false);
+		louie.setBackground(new Color(89,89,89));
+
+
+		// herme_panel.setPreferredSize(new Dimension(200,200));
+		// louie_panel.setPreferredSize(new Dimension(200,200));
+
+		herme_panel.add(herme, BorderLayout.CENTER);
+		herme_panel.add(herme_label, BorderLayout.SOUTH);
+		louie_panel.add(louie, BorderLayout.CENTER);
+		louie_panel.add(louie_label, BorderLayout.SOUTH);
+
+		JLabel message = new JLabel("Choose your fighter!");
+		message.setFont(new Font("Courier New", Font.BOLD, 40));
+		message.setBorder(BorderFactory.createEmptyBorder(80,0,40,0));
+		choose.add(message);
+		choose.add(herme_panel);
+		choose.add(louie_panel);
+
+		herme.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+					System.out.println("HERME IS YOUR FIGHTER!");
+					fighter = 1;
+					choose.setVisible(false);
+					frame.remove(choose);
+					initialize_board_panel();
+					frame.add(board_panel);
+
+			}
+		});
+		louie.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+					System.out.println("LOWE IS YOUR FIGHTER!");
+					fighter = 2;
+					choose.setVisible(false);
+					frame.remove(choose);
+					initialize_board_panel();
+					frame.add(board_panel);
+
+			}
+		});
+
+
+
+
+			
+	}
+	void initialize_board_panel(){
 		board_panel = new JPanel();
 		board_panel.setLayout(new  GridLayout(3,3));
 
@@ -37,41 +113,27 @@ class Gui{
 
 		//INITIALIZES THE 3X3 SIZED BOARD
 		this.initialize_Board(board_panel);
-
-		//ADDS ACTION LISTENER
-		reset.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e){
-			// button.setBackground(new Color(0,0,0));
-				System.out.println("RESET!");
-				board_panel.removeAll();
-				board_panel.revalidate();
-				tictac.reset();;
-				initialize_Board(board_panel);
-			}
-		});
-
-		
-		// BUILD FRAME
-		frame.add(north_panel, BorderLayout.NORTH);
-		frame.add(board_panel, BorderLayout.CENTER);
-		frame.setSize(600,600);
-		frame.setLocationRelativeTo(null);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setVisible(true);
 	}
-
 	void get_Board(){
 		this.board = tictac.get_Board();
 	}
 
 	void update_Board(){
 		this.get_Board();
+		ImageIcon user=null, agent=null;
+		if(this.fighter == 1){
+			user = new ImageIcon("herme.jpeg");
+			agent = new ImageIcon("louie.jpeg");
+		}else if(this.fighter == 2){
+			user = new ImageIcon("louie.jpeg");
+			agent = new ImageIcon("herme.jpeg");
+		}
 		for(int i=0; i<3; i++){
 			for(int j=0; j<3; j++){
 				if(this.board[i][j] == 1){
-					this.button_board[i][j].setBackground(new Color(0,0,0));
+					this.button_board[i][j].setIcon(user);
 				}else if(this.board[i][j] == 2){
-					this.button_board[i][j].setBackground(new Color(100,0,0));
+					this.button_board[i][j].setIcon(agent);
 				}
 			}
 		}
@@ -80,13 +142,13 @@ class Gui{
 	void initialize_Board(JPanel board){
 		for(int i = 0; i < 3; i++){
 			for(int j = 0; j < 3; j++){
-				JPanel cell = new JPanel();
+				DropShadowPanel cell = new DropShadowPanel(5);
 				JButton button = new JButton();
 				button.setName(i+","+j); //SETS THE NAME OF EACH BUTTON
 				button.setPreferredSize(new Dimension(190,190));
 				button.setBorderPainted(false);
 				button.setFocusPainted(false);
-				button.setBackground(new Color(175,206,255));
+				button.setBackground(new Color(89,89,89));
 				cell.add(button);
 				board_panel.add(cell);
 
